@@ -2,6 +2,8 @@
 #include <SPI.h>
 #include <Wire.h>
 #include <Adafruit_BMP280.h>
+#include <SoftwareSerial.h>
+#include <TinyGPSPlus.h>
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 // MPU-6050
@@ -114,41 +116,66 @@ void printMPUdata()
   Serial.print(",");
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+// GPS Neo 6M
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+int RX_pin = 0;
+int TX_pin = 1;
+
+byte gpsData;
+
+SoftwareSerial gpsSerial(RX_pin, TX_pin);
+
+void setupGPSmodule() {
+  gpsSerial.begin(9600);
+}
+
+void printGPSdata() {
+  while (gpsSerial.available() > 0){
+    // get the byte data from the GPS
+    gpsData = gpsSerial.read();
+    Serial.write(gpsData);
+  }
+}
+
 void setup() {
   Serial.begin(9600);
   while ( !Serial ) delay(100); // wait for native usb
 
-  setupBMPregisters();
-  setupMPUregisters();
+  // setupBMPregisters();
+  // setupMPUregisters();
+  setupGPSmodule();
 
-  Serial.print("Temperature");
-  Serial.print(",");
-  Serial.print("Pressure");
-  Serial.print(",");
-  Serial.print("Altitude");
-  Serial.print(",");
-  Serial.print("AccX");
-  Serial.print(",");
-  Serial.print("AccY");
-  Serial.print(",");
-  Serial.print("AccZ");
-  Serial.print(",");
-  Serial.print("GyroX");
-  Serial.print(",");
-  Serial.print("GyroY");
-  Serial.print(",");
-  Serial.print("GyroZ");
-  Serial.print(",");
+  // Serial.print("Temperature");
+  // Serial.print(",");
+  // Serial.print("Pressure");
+  // Serial.print(",");
+  // Serial.print("Altitude");
+  // Serial.print(",");
+  // Serial.print("AccX");
+  // Serial.print(",");
+  // Serial.print("AccY");
+  // Serial.print(",");
+  // Serial.print("AccZ");
+  // Serial.print(",");
+  // Serial.print("GyroX");
+  // Serial.print(",");
+  // Serial.print("GyroY");
+  // Serial.print(",");
+  // Serial.print("GyroZ");
+  // Serial.print(",");
   
   Serial.println();
 }
 
 void loop() {
-  readBMPdata();
-  readMPUdata();
+  // readBMPdata();
+  // readMPUdata();
 
-  printBMPdata();
-  printMPUdata();
+  // printBMPdata();
+  // printMPUdata();
+  printGPSdata();
 
   Serial.println();
   
