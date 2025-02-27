@@ -6,7 +6,7 @@
 #include <TinyGPSPlus.h>
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
-// MPU-6050
+// BMP-280
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #define BMP280_ADDRESS 0x76
@@ -53,6 +53,7 @@ void printBMPdata()
   Serial.print(",");
   Serial.print(Altitude);
   Serial.print(",");
+  Serial.println();
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -114,28 +115,32 @@ void printMPUdata()
   Serial.print(",");
   Serial.print(GyroZ);
   Serial.print(",");
+  Serial.println();
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 // GPS Neo 6M
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-int RX_pin = 0;
-int TX_pin = 1;
+int RX_pin = 3;
+int TX_pin = 4;
 
+bool gpsAvailable = false;
 byte gpsData;
 
-SoftwareSerial gpsSerial(RX_pin, TX_pin);
+SoftwareSerial gpsSerial(TX_pin, RX_pin);
 
 void setupGPSmodule() {
   gpsSerial.begin(9600);
 }
 
 void printGPSdata() {
+  gpsSerial.available() > 0 ? gpsAvailable = true : gpsAvailable = false;
   while (gpsSerial.available() > 0){
     // get the byte data from the GPS
     gpsData = gpsSerial.read();
     Serial.write(gpsData);
+    // Serial.print(gpsData);
   }
 }
 
@@ -175,6 +180,8 @@ void loop() {
 
   // printBMPdata();
   // printMPUdata();
+  Serial.print(gpsAvailable);
+  Serial.println();
   printGPSdata();
 
   Serial.println();
