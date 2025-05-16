@@ -128,6 +128,8 @@ int TX_pin = 4;
 bool gpsAvailable = false;
 byte gpsData;
 
+TinyGPSPlus gps;
+
 SoftwareSerial gpsSerial(TX_pin, RX_pin);
 
 void setupGPSmodule() {
@@ -138,9 +140,24 @@ void printGPSdata() {
   gpsSerial.available() > 0 ? gpsAvailable = true : gpsAvailable = false;
   while (gpsSerial.available() > 0){
     // get the byte data from the GPS
-    gpsData = gpsSerial.read();
-    Serial.write(gpsData);
+    // gpsData = gpsSerial.read();
+    // Serial.write(gpsData);
     // Serial.print(gpsData);
+
+
+    // Using TinyGPSPlus
+    gps.encode(gpsSerial.read());
+
+    if (gps.time.isUpdated()) {
+      Serial.print("Time: ");
+      Serial.print(gps.time.hour());
+      Serial.print(":");
+      Serial.print(gps.time.minute());
+      Serial.print(":");
+      Serial.print(gps.time.second());
+      Serial.print(".");
+      Serial.println(gps.time.centisecond());
+    }
   }
 }
 
